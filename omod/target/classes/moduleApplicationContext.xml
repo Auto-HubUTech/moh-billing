@@ -34,6 +34,9 @@
 			    <prop key="module/mohbilling/manageRecovery.form">manageRecovery</prop>
 			   
 			    <prop key="module/mohbilling/ReportRecovery.form">ReportRecovery</prop>
+			    
+	           <prop key="module/mohbilling/importbillableservices.form">importBillableServicesFormController</prop>
+	           <prop key="module/mohbilling/processbillableimport.form">processBillableServicesController</prop>
 			
 			</props>
 		</property>
@@ -116,6 +119,14 @@
 	</bean>
 	
 	<bean id="mohBillingPrintPDFPatientBillController" class="org.openmrs.module.mohbilling.web.controller.MohBillingPrintPatientBillController"/>
+	
+    <bean id="processBillableServicesController" class="org.openmrs.module.mohbilling.web.controller.importbillables.ProcessBillableServicesImportController">
+		<property name="viewName"><value>/module/mohbilling/processBillableServicesImport</value></property>
+    </bean>
+    	
+    <bean id="importBillableServicesFormController" class="org.openmrs.module.mohbilling.web.controller.importbillables.ImportBillableServicesFormController">
+		<property name="viewName"><value>/module/mohbilling/importBillableServicesForm</value></property>
+    </bean>
 
 	<!-- /Controllers -->
 

@@ -159,6 +159,10 @@
         <name>View Billing</name>
         <description>Allows user to View Billing module</description>
     </privilege>
+    <privilege>
+        <name>Manage Billable Services import</name>
+        <description>Allows user to import Billable Services and Facility Services Prices</description>
+    </privilege>
   
 	<!-- Internationalization -->
 	<!-- All message codes should start with @MODULE_ID@.* -->
