@@ -52,7 +52,6 @@
 		</dependency>
 
 		<!-- End OpenMRS core -->
-
 	</dependencies>
 
 	<!-- From Appointment Module -->

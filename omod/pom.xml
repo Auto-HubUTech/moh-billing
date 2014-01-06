@@ -6,18 +6,20 @@
 		<artifactId>mohbilling</artifactId>
 		<version>0.1.9.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.openmrs.module</groupId>
+
 	<artifactId>mohbilling-omod</artifactId>
 	<packaging>jar</packaging>
 	<name>MoH Billing Module OMOD</name>
 	<description>OpenMRS module project for MoH Billing Module</description>
 
 	<dependencies>
+
+		<!-- Add other dependencies from parent's pom: -->
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
-			<type>pom</type>
-			<version>5.3.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Begin OpenMRS modules -->
@@ -30,6 +32,7 @@
 
 
 		<!-- End OpenMRS modules -->
+
 
 		<!-- Begin OpenMRS core -->
 
@@ -48,14 +51,12 @@
 		<dependency>
 			<groupId>org.openmrs.test</groupId>
 			<artifactId>openmrs-test</artifactId>
-			<type>pom</type>
+			<type>jar</type>
 		</dependency>
 
 		<!-- End OpenMRS core -->
 
 	</dependencies>
-
-	<!-- From Appointment Module -->
 
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
@@ -183,14 +184,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<!-- End of - From Appointment Module -->
-
-	<properties>
-		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
-		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
-		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
-		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-	</properties>
 
 </project>
