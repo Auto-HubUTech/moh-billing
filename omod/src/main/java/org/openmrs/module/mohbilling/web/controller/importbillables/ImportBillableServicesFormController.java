@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.mohbilling.web.controller.importbillables;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +20,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
-//import org.openmrs.module.importpatientidentification.utils.FileReading;
+import org.openmrs.module.mohbilling.businesslogic.ImportUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * This controller backs the /web/module/importPatientIdentification.jsp page.
- * This controller is tied to that jsp page in the
- * /metadata/moduleApplicationContext.xml file
+ * @author Kamonyo
+ * 
+ *         This controller backs the /web/module/importBillableServicesForm.jsp
+ *         page. This controller is tied to that jsp page in the
+ *         /metadata/moduleApplicationContext.xml file
+ * 
  */
 public class ImportBillableServicesFormController extends
 		ParameterizableViewController {
@@ -43,11 +43,11 @@ public class ImportBillableServicesFormController extends
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) {
-		
+
 		if (Context.getAuthenticatedUser() == null)
 			return new ModelAndView(new RedirectView(request.getContextPath()
 					+ "/login.htm"));
-		
+
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(getViewName());
 
@@ -59,22 +59,18 @@ public class ImportBillableServicesFormController extends
 						+ request.getParameter("fileToImport") + "'....");
 
 				boolean includeFirstRow = (request.getParameter("columnHeader") != null && request
-						.getParameter("columnHeader").trim().compareToIgnoreCase("on") == 0) ? false
-						: true;
-				mav.addObject("fileToImport", request
-						.getParameter("fileToImport"));
+						.getParameter("columnHeader").trim()
+						.compareToIgnoreCase("on") == 0) ? false : true;
+				mav.addObject("fileToImport",
+						request.getParameter("fileToImport"));
 				mav.addObject("columnHeaderChecked", includeFirstRow);
 
-//				List<List<String>> result = FileReading
-//						.init(request.getParameter("fileToImport"),
-//								includeFirstRow, request);
-//				mav.addObject("result", result);
-//				mav.addObject("numberOfPatientsToImport", result.size());
+				List<List<String>> result = ImportUtil.readFile(
+						request.getParameter("fileToImport"), 0, 8);
+				mav.addObject("result", result);
+				mav.addObject("numberOfPatientsToImport", result.size());
 				log.info(">>>>>>>> Finished!");
 
-				mav.addObject("pIdentifierTypes",
-						getPatientIdentifierTypeList());
-				mav.addObject("locations", getLocationList());
 			} else
 				mav.addObject("result", null);
 		} catch (Exception e) {
@@ -82,26 +78,6 @@ public class ImportBillableServicesFormController extends
 		}
 
 		return mav;
-	}
-
-	private HashMap<Integer, String> getLocationList() {
-		HashMap<Integer, String> locationMap = new HashMap<Integer, String>();
-
-		for (Location loc : Context.getLocationService().getAllLocations())
-			locationMap.put(loc.getLocationId(), loc.getName());
-
-		return locationMap;
-	}
-
-	private HashMap<Integer, String> getPatientIdentifierTypeList() {
-		HashMap<Integer, String> pIdentifierTypeMap = new HashMap<Integer, String>();
-
-		for (PatientIdentifierType pit : Context.getPatientService()
-				.getAllPatientIdentifierTypes())
-			pIdentifierTypeMap.put(pit.getPatientIdentifierTypeId(), pit
-					.getName());
-
-		return pIdentifierTypeMap;
 	}
 
 }
