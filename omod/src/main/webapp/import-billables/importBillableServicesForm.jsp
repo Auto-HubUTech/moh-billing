@@ -13,7 +13,7 @@
 <i style="color: red; margin-left: 2px;"><b>Rmq:</b> The excel file to import must be in a 97-2003 format</i>
 
 <br/>
-<form class="box" action="importpatientidentification.form" method="post">
+<form class="box" action="importbillableservices.form" method="post">
 	<table>
 		<tr>
 			<td style="vertical-align: top;">File to import</td>
@@ -21,7 +21,7 @@
 				<input type="text" name="fileToImport" size="80" value="${fileToImport}"/>
 				<br/><i style="color: red;">C:\\folder\\fileToImport.xls (for Windows) OR /home/user/fileToImport.xls (for Linux)</i>
 			</td>
-			<td style="vertical-align: top;"><input type="submit" value="View/Analyse File Content"/></td>
+			<td style="vertical-align: top;"><input type="submit" value="View & Analyse File Content"/></td>
 		</tr>
 		<tr>
 			<td>Take first row as column headers</td>
@@ -33,53 +33,6 @@
 <br/>
 <c:if test="${null!=result}">
 	<div>
-	
-		<form class="box" action="processDataImport.form" method="post" id="form_import_patient_identification">
-			<table>
-				<tr>
-					<td>Location</td>
-					<td><select name="location">
-							<c:forEach items="${locations}" var="loc"><option value="${loc.key}">${loc.value}</option></c:forEach>
-						</select>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Local Patient Identifier Type</td>
-					<td><select name="localIdentifierType">
-							<c:forEach items="${pIdentifierTypes}" var="pIdType"><option value="${pIdType.key}">${pIdType.value}</option></c:forEach>
-						</select>
-					</td>
-					<td style="padding-left: 30px;"><input type="checkbox" name="includeLocalIdentifierType"/> Include this Identifier</td>
-				</tr>
-				<tr>
-					<td>Tracnet Identifier Type</td>
-					<td><select name="tracnetIdentifierType">
-							<c:forEach items="${pIdentifierTypes}" var="pIdentifierType"><option value="${pIdentifierType.key}">${pIdentifierType.value}</option></c:forEach>
-						</select>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>ARV Identifier Type</td>
-					<td><select name="arvIdentifierType">
-							<c:forEach items="${pIdentifierTypes}" var="pType"><option value="${pType.key}">${pType.value}</option></c:forEach>
-						</select>
-					</td>
-					<td style="padding-left: 30px;"><input type="checkbox" name="includeArvIdentifierType"/> Include this Identifier</td>
-				</tr>
-				<tr>
-					<td><input type="hidden" name="sourceFile" size="40" value="${fileToImport}"/>
-						<input type="hidden" name="includeFirstRow" value="${columnHeaderChecked}"/>
-						<input type="hidden" name="numberOfRecords" value="${numberOfPatientsToImport+((columnHeaderChecked)?0:1)}"/>
-					</td>
-					<td><input type="button" onclick="submitForm();" value="Import Data"/></td>
-					<td></td>
-				</tr>
-			</table>
-		</form>
-		<br/>
-		
 		<div id="data" style="margin: auto; width: 99%; font-size: 0.9em">
 			<div id="list_container" style="width: 99%; padding-top: 4px;">
 				<div id="list_title">
@@ -92,36 +45,20 @@
 				<div style="width: 100%; max-height: 500px; overflow: scroll;">
 					<table id="list_data" border="1">
 						<tr>
-							<th rowspan="2" class="columnHeader">#</th>
-							<th rowspan="2" class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a String (Optional)"/>Local ID</th>
-							<th rowspan="2" class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a six digit Number (Mandatory)"/>No Tracnet</th>
-							<th rowspan="2" class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a Number (Optional)"/>ARV Number</th>
-							<th colspan="4" class="columnHeader"><center>Patient Identification</center></th>
-							<th colspan="4" class="columnHeader"><center>Address</center></th>
-							<th colspan="3" class="columnHeader"><center>HIV Program</center></th>
-							<th colspan="2" class="columnHeader"><center>Patient Exit Care</center></th>
-						</tr>		
-						<tr>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Mandatory)"/>Nom</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Mandatory)"/>Prenom</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a "/>DoB</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a "/>Gender</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Optional)"/>District</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Optional)"/>Secteur</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Optional)"/>Cellule</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be an Open text (Optional)"/>Umudugudu</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a Date with (dd/MM/yyyy) as format (Mandatory)"/>Date Enrollement</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be [1 or PMTCT], [2 or VCT], [3 or Hospitalisation], [4 or Transfer in], [5 or Outpatient Consultation] or [6 or Other] (If not provided, it will be taken as Unknown)"/>Source</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a Date with (dd/MM/yyyy) as format (Optional)"/>ARV Startdate</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be a Date with (dd/MM/yyyy) as format (Optional)"/>Date</th>
-							<th class="columnHeader"><img border="0" src="<openmrs:contextPath/>/moduleResources/@MODULE_ID@/images/help.gif" title="This should be [1 or Died], [2 or Defaulted], [3 or HIV Negative] or [4 or Transferred] (Optional but should be provided in case you provided the date the patient exited care)"/>Reason</th>
+							<th class="columnHeader">#</th>
+							<th class="columnHeader">Actes médicaux</th>
+							<th class="columnHeader">Mutuelle communautaire</th>
+							<th class="columnHeader">RSSB,MMI, MUTUELLES D'UNIVERSITES ET INSTITUTIONS SUPERIEURES</th>
+							<th class="columnHeader">Assurance privee, Societe commerciale, Autres</th>
+							<th class="columnHeader">Sans couverture par assurance valable</th>
+							<th class="columnHeader">OpenMRS concept ID</th>
 						</tr>
-						<c:if test="${empty result}"><tr><td colspan="16" width="100%"  style="text-align: center; ">No data found !</td></tr></c:if>
+						<c:if test="${empty result}"><tr><td colspan="6" width="100%"  style="text-align: center; ">No data read !</td></tr></c:if>
 						<c:forEach items="${result}" var="rowContent" varStatus="status">
 							<tr>
 								<td>${status.count}.</td>
 								<c:forEach items="${rowContent}" var="cellContent" varStatus="counter">
-									<td class="rowValue ${status.count%2!=0?'even':''}" style="<c:if test="${(((counter.count==2) || (counter.count==4) || (counter.count==5) || (counter.count==6) || (counter.count==7) || (counter.count==12)) && (cellContent=='' || cellContent==null))}">background-color: red</c:if>">${cellContent}</td>
+									<td class="rowValue ${status.count%2!=0?'even':''}">${cellContent}</td>
 								</c:forEach>
 							</tr>
 						</c:forEach>
