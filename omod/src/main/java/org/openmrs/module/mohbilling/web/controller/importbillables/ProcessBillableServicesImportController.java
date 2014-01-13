@@ -22,7 +22,8 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * @author Yves GAKUBA
+ * @author kamonyo
+ *
  */
 public class ProcessBillableServicesImportController extends
 		ParameterizableViewController {
@@ -41,42 +42,15 @@ public class ProcessBillableServicesImportController extends
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(getViewName());
 		Date startTime = new Date();
-		int numberOfPatientCreatedSuccessFully = 0, numberOfPatientNotCreatedSuccessFully = 0;
 
 		String fileName = "";
-		BufferedWriter out = null;
 
 		try {
 			boolean includeFirstRow = (request.getParameter("includeFirstRow") == null || request
 					.getParameter("includeFirstRow").trim().compareTo("false") == 0) ? false
 					: true;
-			String sourceFile = request.getParameter("sourceFile");
-			Location loc = Context.getLocationService().getLocation(
-					Integer.valueOf(request.getParameter("location")));
 
-			PatientIdentifierType tracnetIdType = Context.getPatientService()
-					.getPatientIdentifierType(
-							Integer.valueOf(request
-									.getParameter("tracnetIdentifierType")));
-
-			PatientIdentifierType localIdType = (request
-					.getParameter("includeLocalIdentifierType") != null && request
-					.getParameter("includeLocalIdentifierType").trim()
-					.compareToIgnoreCase("on") == 0) ? Context
-					.getPatientService().getPatientIdentifierType(
-							Integer.valueOf(request
-									.getParameter("localIdentifierType")))
-					: null;
-
-			PatientIdentifierType arvIdType = (request
-					.getParameter("includeArvIdentifierType") != null && request
-					.getParameter("includeArvIdentifierType").trim()
-					.compareToIgnoreCase("on") == 0) ? Context
-					.getPatientService().getPatientIdentifierType(
-							Integer.valueOf(request
-									.getParameter("arvIdentifierType"))) : null;
-
-			int indexFrom = 0, i = 0;
+			int indexFrom = 0;
 
 			if (includeFirstRow)
 				indexFrom = 0;
@@ -84,36 +58,18 @@ public class ProcessBillableServicesImportController extends
 				indexFrom = 1;
 			}
 			
-			fileName = createReportFileName(sourceFile, request);
-//			out = FileReading.createReportFile(fileName);
 			for (int index = indexFrom; index < Integer.valueOf(request
 					.getParameter("numberOfRecords")); index++) {
-				Patient p = null;//FileReading.createPatient(sourceFile, index,
-//						request, loc, tracnetIdType, localIdType, arvIdType,
-//						out);
 
 				log.info(">>>>>>>>>>> Trying to create patient at rowIndex#"
 						+ index);
-
-				if (null != p) {
-					numberOfPatientCreatedSuccessFully += 1;
-				} else {
-					numberOfPatientNotCreatedSuccessFully += 1;
-				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
 					"An error occured, please contact your administrator.");
-		} finally {
-//			if (null != out)
-//				FileReading.closeReportFile(out);
 		}
-		mav.addObject("recordCreatedSuccessfully",
-				numberOfPatientCreatedSuccessFully);
-		mav.addObject("recordNotCreatedSuccessfully",
-				numberOfPatientNotCreatedSuccessFully);
 
 		mav.addObject("reportFileName", fileName);
 		Date endTime = new Date();
@@ -136,16 +92,5 @@ public class ProcessBillableServicesImportController extends
 		return mav;
 	}
 
-	private String createReportFileName(String filePath,
-			HttpServletRequest request) {
-
-		String t = new Date().toString();
-		t = t.replace(" ", "_");
-		t = t.replace(":", "_");
-
-		String fileName = "report_file_" + (t + ".txt");
-
-		return fileName;
-	}
 
 }
