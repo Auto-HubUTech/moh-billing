@@ -61,6 +61,8 @@ public class AdminList extends AdministrationSectionExt {
 		map.put("module/mohbilling/insurancePolicySearch.form", "mohbilling.insurance.policy.manage");
 		if (Context.getAuthenticatedUser().hasPrivilege("Manage Patient Bill Calculations"))
 		map.put("module/mohbilling/patientSearchBill.form", "mohbilling.billing.manage");
+		if (Context.getAuthenticatedUser().hasPrivilege("Manage Patient Bill Calculations"))
+		map.put("module/mohbilling/importbillableservices.form", "mohbilling.billing.import.billables");
 		if (Context.getAuthenticatedUser().hasPrivilege("Manage Reports"))
 		map.put("module/mohbilling/cohort.form", "mohbilling.billing.report");
         

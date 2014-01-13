@@ -4,15 +4,15 @@
 
 <!-- FROM GAKUBA'S MODULE: importPatientIds... -->
 
-<%@ include file="templates/mohBillingLocalHeader.jsp"%>
+<!-- Put here the billing template header... -->
 
-<h2><spring:message code="@MODULE_ID@.billing.calculation"/></h2>
+<h2><spring:message code="mohbilling.billing.import.billables"/></h2>
 
 <openmrs:htmlInclude file="/moduleResources/@MODULE_ID@/listing.css" />
 <openmrs:htmlInclude file="/moduleResources/@MODULE_ID@/listingstyle.css" />
 
 <br/>
-<h2><spring:message code="@MODULE_ID@.step.3"/></h2>
+<h2><spring:message code="mohbilling.step.3"/></h2>
 <br/>
 
 <b class="boxHeader">The process of importing <u>${recordCreatedSuccessfully+recordNotCreatedSuccessfully}</u> patient(s) identification(s) and HIV data took <u>${timeOfProcess}</u></b>

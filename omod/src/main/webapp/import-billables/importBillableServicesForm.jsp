@@ -2,16 +2,13 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <openmrs:require privilege="Manage Billable Services import" otherwise="/login.htm" redirect="/module/@MODULE_ID@/patientBillPayment.form" />
 
-<%@ include file="templates/mohBillingLocalHeader.jsp"%>
+<!-- Put here the billing template header... -->
 
-<h2><spring:message code="@MODULE_ID@.billing.calculation"/></h2>
+<h2><spring:message code="mohbilling.billing.import.billables"/></h2>
 
 <!-- FROM GAKUBA'S MODULE: importPatientIds... -->
 
-<openmrs:htmlInclude file="/moduleResources/@MODULE_ID@/listing.css" />
-<openmrs:htmlInclude file="/moduleResources/@MODULE_ID@/listingstyle.css" />
-
-<h2><c:if test="${null==result}"><spring:message code="@MODULE_ID@.step.1"/></c:if><c:if test="${null!=result}"><spring:message code="@MODULE_ID@.step.2"/></c:if></h2>
+<h2 style="color: blue;">Step 1 : Locate the excel file containing Tariff to import</h2>
 
 <i style="color: red; margin-left: 2px;"><b>Rmq:</b> The excel file to import must be in a 97-2003 format</i>
 
@@ -22,7 +19,7 @@
 			<td style="vertical-align: top;">File to import</td>
 			<td style="vertical-align: top;">
 				<input type="text" name="fileToImport" size="80" value="${fileToImport}"/>
-				<br/><i style="color: red;">C:\\folder\\fileToImport.xls</i>
+				<br/><i style="color: red;">C:\\folder\\fileToImport.xls (for Windows) OR /home/user/fileToImport.xls (for Linux)</i>
 			</td>
 			<td style="vertical-align: top;"><input type="submit" value="View/Analyse File Content"/></td>
 		</tr>

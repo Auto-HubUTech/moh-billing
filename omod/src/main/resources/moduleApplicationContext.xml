@@ -121,11 +121,11 @@
 	<bean id="mohBillingPrintPDFPatientBillController" class="org.openmrs.module.mohbilling.web.controller.MohBillingPrintPatientBillController"/>
 	
     <bean id="processBillableServicesController" class="@MODULE_PACKAGE@.web.controller.importbillables.ProcessBillableServicesImportController">
-		<property name="viewName"><value>/module/@MODULE_ID@/processBillableServicesImport</value></property>
+		<property name="viewName"><value>/module/@MODULE_ID@/import-billables/processBillableServicesImport</value></property>
     </bean>
     	
     <bean id="importBillableServicesFormController" class="@MODULE_PACKAGE@.web.controller.importbillables.ImportBillableServicesFormController">
-		<property name="viewName"><value>/module/@MODULE_ID@/importBillableServicesForm</value></property>
+		<property name="viewName"><value>/module/@MODULE_ID@/import-billables/importBillableServicesForm</value></property>
     </bean>
 
 	<!-- /Controllers -->

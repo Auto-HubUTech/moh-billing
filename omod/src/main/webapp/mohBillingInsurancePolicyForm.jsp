@@ -69,8 +69,8 @@
 </script>
 
 <h2>
-	<c:if test="${null ne param.patientId}"><spring:message code="@MODULE_ID@.insurance.policy.create" /></c:if>
-	<c:if test="${null ne param.insurancePolicyId}"><spring:message code="@MODULE_ID@.insurance.policy.edit" /></c:if>
+	<c:if test="${null ne param.patientId}"><spring:message code="mohbilling.insurance.policy.create" /></c:if>
+	<c:if test="${null ne param.insurancePolicyId}"><spring:message code="mohbilling.insurance.policy.edit" /></c:if>
 </h2>
 
 <form action="insurancePolicy.form?save=true" method="post">
