@@ -6,30 +6,37 @@ package org.openmrs.module.mohbilling.businesslogic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.poifs.filesystem.*;
+import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.mohbilling.model.BillableService;
+import org.openmrs.module.mohbilling.model.FacilityServicePrice;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Kamonyo
  * 
+ *         Useful to handle importing Billable Service or Facility Services
+ *         Prices action: this can be done in order to create new ones or update
+ *         existing ones...
  */
 public class ImportUtil {
 	private static Log log = LogFactory.getLog(ImportUtil.class);
 
 	/**
+	 * Reads content of a given File by specifying its path on the System...
+	 * 
 	 * @param filePath
 	 *            the path where the file can be found on the system (e.g.
 	 *            "C:\\test.xls" or "/home/user/text.xls")
 	 * @param sheetAt
 	 *            the number of the Sheet that will be read
-	 * @param includeFirstRow
+	 * @param rowAt
 	 *            see if you can precise the row to start from... Normally the
 	 *            default value should be <code>TRUE</code>
-	 * @return
+	 * @return myList the list of the Excel File content (LiCo)
 	 */
 	public static List<List<String>> readFile(String filePath, int sheetAt,
 			int rowAt) {
@@ -53,8 +60,10 @@ public class ImportUtil {
 			int rowIndex = 0, columnIndex = 0;
 
 			while (rowIterator.hasNext()) {
+
 				List<String> rowValues = new ArrayList<String>();
 				HSSFRow myRow = (HSSFRow) rowIterator.next();
+
 				for (columnIndex = 0; columnIndex < 6; columnIndex++) {
 					HSSFCell myCell = myRow.getCell((short) columnIndex);
 
@@ -101,60 +110,85 @@ public class ImportUtil {
 	}
 
 	/**
-	 * @param fileName
-	 * @param includeFirstRow
-	 * @param request
-	 * @return
+	 * Gets the Tariff Items as Facility Service Price List...
+	 * 
+	 * @param tariffList
+	 *            the list of items from the web pages (those read from Excel
+	 *            file)
+	 * @return FacilityServicePrices list generated from the List Chosen by the
+	 *         User
 	 */
-	public static List<List<String>> contentReading(String fileName,
-			boolean includeFirstRow, HttpServletRequest request) {
-		FileInputStream myInput = null;
-		List<List<String>> myList = new ArrayList<List<String>>();
-		try {
-			myInput = new FileInputStream(fileName);
+	public List<FacilityServicePrice> getNewClinicalServices(
+			List<Object[]> tariffList) {
 
-			POIFSFileSystem myFileSystem = new POIFSFileSystem(myInput);
+		List<FacilityServicePrice> billablesList = new ArrayList<FacilityServicePrice>();
 
-			HSSFWorkbook myWorkBook = new HSSFWorkbook(myFileSystem);
+		for (Object[] row : tariffList) {
 
-			HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+			double tariffB;
+			String clinicalService;
+			Concept concept;
 
-			Iterator rowIter = mySheet.rowIterator();
+			clinicalService = (String) row[0];
+			tariffB = (Double) row[2];
+			concept = Context.getConceptService().getConcept((Integer) row[5]);
 
-			int rowIndex = 0, columnIndex = 0;
+			// Create a Facility Service Price object:
+			FacilityServicePrice service = new FacilityServicePrice();
 
-			while (rowIter.hasNext()) {
-				List<String> rowValues = new ArrayList<String>();
-				HSSFRow myRow = (HSSFRow) rowIter.next();
-				for (columnIndex = 0; columnIndex < 16; columnIndex++) {
-					HSSFCell myCell = myRow.getCell((short) columnIndex);
-					rowValues.add((myCell != null) ? myCell.toString() : "");
-				}
+			service.setConcept(concept);
+			service.setCreatedDate(new Date());
+			service.setCreator(Context.getAuthenticatedUser());
+			service.setDescription(clinicalService);
+			service.setName(clinicalService);
+			service.setLocation(Context.getLocationService()
+					.getDefaultLocation());
+			service.setFullPrice(BigDecimal.valueOf(tariffB));
+			service.setRetired(false);
+			service.setShortName(clinicalService);
+			service.setStartDate(new Date());
+			service.setEndDate(InsurancePolicyUtil.addYears(new Date(), 10));
 
-				if (includeFirstRow || rowIndex > 0) {
-					myList.add(rowValues);
+			FacilityServicePriceUtil.createFacilityService(service);
 
-				}
-				rowIndex++;
-			}
-			return myList;
-			// } catch (XmlFileException ofe) {
-			// ofe.printStackTrace();
-			// request
-			// .getSession()
-			// .setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-			// "The file you are trying to import is invalid, please check and try again.");
-			// return null;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			try {
-				myInput.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			billablesList.add(service);
 		}
+
+		return billablesList;
 	}
 
+	public List<BillableService> createNewBillableServices(
+			List<FacilityServicePrice> fspList) {
+		
+		//TODO: code goes here...
+
+		return null;
+	}
+
+	public List<BillableService> updateBillableServices(
+			List<FacilityServicePrice> fspList) {
+		
+		//TODO: code goes here...
+
+		return null;
+	}
+	
+	/**
+	 * Gets the Tariff Items as Facility Service Price List...
+	 * 
+	 * @param tariffList
+	 *            the list of items from the web pages (those read from Excel
+	 *            file)
+	 * @return FacilityServicePrices list generated from the List Chosen by the
+	 *         User
+	 */
+	public List<FacilityServicePrice> getUpdatedClinicalServices(
+			List<Object[]> tariffList) {
+
+		List<FacilityServicePrice> billablesList = new ArrayList<FacilityServicePrice>();
+		
+		//TODO: code goes here...
+		
+		return billablesList;
+	}
 }
