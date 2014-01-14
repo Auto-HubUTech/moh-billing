@@ -52,6 +52,7 @@
 							<th class="columnHeader">Assurance privee, Societe commerciale, Autres</th>
 							<th class="columnHeader">Sans couverture par assurance valable</th>
 							<th class="columnHeader">OpenMRS concept ID</th>
+							<th><input id="deselect_button" type="button" value="Deselect All" name="deselect_button"/></th>
 						</tr>
 						<c:if test="${empty result}"><tr><td colspan="6" width="100%"  style="text-align: center; ">No data read !</td></tr></c:if>
 						<c:forEach items="${result}" var="rowContent" varStatus="status">
@@ -60,6 +61,7 @@
 								<c:forEach items="${rowContent}" var="cellContent" varStatus="counter">
 									<td class="rowValue ${status.count%2!=0?'even':''}">${cellContent}</td>
 								</c:forEach>
+								<td><input id="box_${status.count}" type="checkbox" checked="checked" name="box_${cellContent}"/></td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -80,11 +82,21 @@
 </c:if>
 
 <script type="text/javascript">
+var $hfe = jQuery.noConflict();
+
 	function submitForm(){
 		if (confirm("Are you sure you want to start importing ?")) {
 			document.getElementById("form_import_patient_identification").submit();
 	    }
 	}
+	
+	$hfe('input[type=checkbox]').attr('checked',true);
+    $hfe('input[type=button]').change(function(){
+             if($hfe('button#deselect_button').clicked()){
+                    $hfe('span#is_opportunistic input[type=checkbox]').attr('disabled',false);
+             }
+     });
+	
 </script>
 
 <!-- END - FROM GAKUBA'S MODULE: importPatientIds... -->
