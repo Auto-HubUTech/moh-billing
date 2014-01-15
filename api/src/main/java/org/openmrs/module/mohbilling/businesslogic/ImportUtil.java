@@ -10,6 +10,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mohbilling.model.BillableService;
 import org.openmrs.module.mohbilling.model.FacilityServicePrice;
+import org.openmrs.module.mohbilling.model.ImportedItem;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -38,11 +39,12 @@ public class ImportUtil {
 	 *            default value should be <code>TRUE</code>
 	 * @return myList the list of the Excel File content (LiCo)
 	 */
-	public static List<List<String>> readFile(String filePath, int sheetAt,
+	public static List<ImportedItem> readFile(String filePath, int sheetAt,
 			int rowAt) {
 
 		FileInputStream file = null;
-		List<List<String>> myList = new ArrayList<List<String>>();
+		List<ImportedItem> myList = new ArrayList<ImportedItem>();
+
 		try {
 
 			file = new FileInputStream(new File(filePath));
@@ -57,40 +59,23 @@ public class ImportUtil {
 			Iterator<HSSFRow> rowIterator = sheet.rowIterator();
 
 			// Get iterator to all cells of current row
-			int rowIndex = 0, columnIndex = 0;
+			int rowIndex = 0;
 
 			while (rowIterator.hasNext()) {
 
-				List<String> rowValues = new ArrayList<String>();
 				HSSFRow myRow = (HSSFRow) rowIterator.next();
 
-				for (columnIndex = 0; columnIndex < 6; columnIndex++) {
-					HSSFCell myCell = myRow.getCell((short) columnIndex);
-
-					if (myCell != null) {
-						if (myCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-							rowValues.add(myCell.getStringCellValue());
-						} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-							rowValues.add(""
-									+ ((Double) myCell.getNumericCellValue())
-											.longValue());
-						} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
-							rowValues.add("" + myCell.getStringCellValue());
-						} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
-							rowValues.add("" + myCell.getBooleanCellValue());
-						} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-							rowValues.add(""
-									+ ((Double) myCell.getNumericCellValue())
-											.longValue());
-						} else
-							rowValues.add(myCell.toString());
-					} else
-						rowValues.add("");
-
-				}
-
 				if (rowIndex >= rowAt - 1) {
-					myList.add(rowValues);
+
+					ImportedItem tariff = new ImportedItem(
+							(String) getCellValue(myRow.getCell((short) 0)),
+							(Double) getCellValue(myRow.getCell((short) 1)),
+							(Double) getCellValue(myRow.getCell((short) 2)),
+							(Double) getCellValue(myRow.getCell((short) 3)),
+							(Double) getCellValue(myRow.getCell((short) 4)),
+							((Double) getCellValue(myRow.getCell((short) 5)))
+									.intValue(), true);
+					myList.add(tariff);
 				}
 				rowIndex++;
 			}
@@ -159,20 +144,20 @@ public class ImportUtil {
 
 	public List<BillableService> createNewBillableServices(
 			List<FacilityServicePrice> fspList) {
-		
-		//TODO: code goes here...
+
+		// TODO: code goes here...
 
 		return null;
 	}
 
 	public List<BillableService> updateBillableServices(
 			List<FacilityServicePrice> fspList) {
-		
-		//TODO: code goes here...
+
+		// TODO: code goes here...
 
 		return null;
 	}
-	
+
 	/**
 	 * Gets the Tariff Items as Facility Service Price List...
 	 * 
@@ -186,9 +171,49 @@ public class ImportUtil {
 			List<Object[]> tariffList) {
 
 		List<FacilityServicePrice> billablesList = new ArrayList<FacilityServicePrice>();
-		
-		//TODO: code goes here...
-		
+
+		// TODO: code goes here...
+
 		return billablesList;
+	}
+
+	/**
+	 * Gets the HSSFCell (from Excel file) value and converts it into Object
+	 * 
+	 * @param myCell
+	 *            the Excel file cell to be returned as Object
+	 * @return empty String object when the cell is empty, and Object object
+	 *         otherwise
+	 */
+	private static Object getCellValue(HSSFCell myCell) {
+		if (myCell != null) {
+			if (myCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				return myCell.getStringCellValue();
+			} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				return myCell.getNumericCellValue();
+			} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
+				return myCell.getNumericCellValue();
+			} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+				return myCell.getBooleanCellValue();
+			} else if (myCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+				return myCell.getNumericCellValue();
+			} else
+				return myCell.toString();
+		} else
+			return "";
+	}
+
+	private static ImportedItem getItemByConcept(String checkBox,
+			List<ImportedItem> items) {
+		
+		String[] temp = checkBox.split("chosen_");
+		Integer conceptId = Integer.parseInt(temp[0]);
+
+		for (ImportedItem item : items) {
+			if (item.getConceptId().equals(conceptId)) {
+				return item;
+			}
+		}
+		return null;
 	}
 }
