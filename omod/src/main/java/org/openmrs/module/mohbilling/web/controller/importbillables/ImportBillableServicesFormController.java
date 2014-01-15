@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mohbilling.businesslogic.ImportUtil;
+import org.openmrs.module.mohbilling.model.ImportedItem;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -65,7 +66,7 @@ public class ImportBillableServicesFormController extends
 						request.getParameter("fileToImport"));
 				mav.addObject("columnHeaderChecked", includeFirstRow);
 
-				List<List<String>> result = ImportUtil.readFile(
+				List<ImportedItem> result = ImportUtil.readFile(
 						request.getParameter("fileToImport"), 0, 8);
 				mav.addObject("result", result);
 				mav.addObject("numberOfPatientsToImport", result.size());
