@@ -49,31 +49,57 @@ public class ImportBillableServicesFormController extends
 			return new ModelAndView(new RedirectView(request.getContextPath()
 					+ "/login.htm"));
 
+		List<ImportedItem> result = null;
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(getViewName());
 
-		try {
-			if (null != request.getParameter("fileToImport")
-					&& request.getParameter("fileToImport").trim()
-							.compareTo("") != 0) {
-				log.info(">>>>>>>> Starting reading file '"
-						+ request.getParameter("fileToImport") + "'....");
+		// Boosting the checkBoxes...
+		if (request.getSession().getAttribute("selected") != null)
+			if (request.getSession().getAttribute("selected").equals(true)) {
+				String myItem = (String) request.getSession().getAttribute(
+						"myName");
+				List<ImportedItem> myList = (List<ImportedItem>) request
+						.getSession().getAttribute("itemsList");
 
-				boolean includeFirstRow = (request.getParameter("columnHeader") != null && request
-						.getParameter("columnHeader").trim()
-						.compareToIgnoreCase("on") == 0) ? false : true;
-				mav.addObject("fileToImport",
-						request.getParameter("fileToImport"));
-				mav.addObject("columnHeaderChecked", includeFirstRow);
+				result = ImportUtil.getItemByConcept(myItem, myList, false);
 
-				List<ImportedItem> result = ImportUtil.readFile(
-						request.getParameter("fileToImport"), 0, 8);
+				System.out
+						.println("_______________________>>>>>>>>> SIZE of the LIST : "
+								+ result.size());
+				System.out
+						.println("_______________________>>>>>>>>> Reaching the controller with SELECTED : "
+								+ request.getSession().getAttribute("selected")
+										.toString());
+
 				mav.addObject("result", result);
-				mav.addObject("numberOfPatientsToImport", result.size());
-				log.info(">>>>>>>> Finished!");
+				return mav;
+			}
 
-			} else
-				mav.addObject("result", null);
+		try {
+			if (null != request.getParameter("fileToImport"))
+				if (!request.getParameter("fileToImport").equals("")
+						&& request.getParameter("fileToImport").trim()
+								.compareTo("") != 0) {
+
+					log.info(">>>>>>>> Starting reading file '"
+							+ request.getParameter("fileToImport") + "'....");
+
+					boolean includeFirstRow = (request
+							.getParameter("columnHeader") != null && request
+							.getParameter("columnHeader").trim()
+							.compareToIgnoreCase("on") == 0) ? false : true;
+					mav.addObject("fileToImport",
+							request.getParameter("fileToImport"));
+					mav.addObject("columnHeaderChecked", includeFirstRow);
+
+					result = ImportUtil.readFile(
+							request.getParameter("fileToImport"), 0, 8);
+					mav.addObject("result", result);
+					mav.addObject("numberOfPatientsToImport", result.size());
+					log.info(">>>>>>>> Finished!");
+
+				} else
+					mav.addObject("result", null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
