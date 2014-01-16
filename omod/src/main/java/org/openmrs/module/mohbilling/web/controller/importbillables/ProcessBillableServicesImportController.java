@@ -4,7 +4,9 @@
 package org.openmrs.module.mohbilling.web.controller.importbillables;
 
 import java.io.BufferedWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mohbilling.model.ImportedItem;
 //import org.openmrs.module.importpatientidentification.utils.FileReading;
 import org.openmrs.web.WebConstants;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,7 +26,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * @author kamonyo
- *
+ * 
  */
 public class ProcessBillableServicesImportController extends
 		ParameterizableViewController {
@@ -42,6 +45,11 @@ public class ProcessBillableServicesImportController extends
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(getViewName());
 		Date startTime = new Date();
+		List<ImportedItem> items = new ArrayList<ImportedItem>();
+		items = (List<ImportedItem>) request.getSession().getAttribute("itemsList");
+		for(ImportedItem item:items)
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<< My list is of size: "
+				+ item.isChosen() + " >>>>>>>>>>>>>>>>>>>>>");
 
 		String fileName = "";
 
@@ -57,7 +65,7 @@ public class ProcessBillableServicesImportController extends
 			else {
 				indexFrom = 1;
 			}
-			
+
 			for (int index = indexFrom; index < Integer.valueOf(request
 					.getParameter("numberOfRecords")); index++) {
 
@@ -91,6 +99,5 @@ public class ProcessBillableServicesImportController extends
 
 		return mav;
 	}
-
 
 }
