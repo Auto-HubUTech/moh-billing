@@ -203,17 +203,25 @@ public class ImportUtil {
 			return "";
 	}
 
-	private static ImportedItem getItemByConcept(String checkBox,
-			List<ImportedItem> items) {
-		
-		String[] temp = checkBox.split("chosen_");
-		Integer conceptId = Integer.parseInt(temp[0]);
+	public static List<ImportedItem> getItemByConcept(String checkBox,
+			List<ImportedItem> items, boolean chosen) {
 
-		for (ImportedItem item : items) {
-			if (item.getConceptId().equals(conceptId)) {
-				return item;
+		List<ImportedItem> itemsList = new ArrayList<ImportedItem>();
+		itemsList.addAll((List<ImportedItem>) items);
+		String[] temp = checkBox.split("chosen_");
+		Integer conceptId = Integer.parseInt(temp[1]);
+
+		System.out
+				.println("____________________ CONCEPT ID got from the JSP page : "
+						+ conceptId);
+
+		if (itemsList.get(0) instanceof ImportedItem)
+			for (ImportedItem item : itemsList) {
+				if (item.getConceptId().intValue() == conceptId) {
+					item.setChosen(chosen);
+					break;
+				}
 			}
-		}
-		return null;
+		return items;
 	}
 }
