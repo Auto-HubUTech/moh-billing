@@ -41,6 +41,24 @@
 			<artifactId>openmrs-web</artifactId>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<scope>test</scope>
+			<version>1.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<scope>test</scope>
+			<version>1.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+			<version>4.11</version>
+		</dependency>
 
 		<!-- End OpenMRS core -->
 
